@@ -1,0 +1,250 @@
+//**************************
+//******** equal-cols ********
+//***************************
+//**
+//*** USAGE
+//*
+//* equal-cols is functions to create columns with a width and margin in percentage to split columns perfectly to fit the page
+//*
+//*** equal-cols-FULL
+//*
+//*
+//* equal-cols-FULL allow you to add more values to the columns
+//* @cols: How many columns you want
+//* @right: In percent, how much gutter/right margin you want between the columns
+//* @top: Mixed value; How much top margin you want between the columns if they creates a new row.
+//* @bottom: If you want bottom margin instead of top margin OR you might want both, then you can set it here.
+//* @remove-margins: If TRUE, the function will remove the top / bottom margin in the first and the last row of columns. This is great if you don't want the columns to affect the rest of the page space.
+//* @last: If you are creating a responsive page, then you have to reset the last values. If this is set to 0, nothing will change.
+//** Example: If you used the a equal-cols function on an element, and you want less columns in lower resolutions. then you set @cols to e.g 2, and @last to the last used column value, that might be 3.
+//*
+//*
+//* equal-cols is a simplified equal-cols-full. This removes the top and bottom margin automatically and you don't have to set it to do. It also set the bottom margin to 0, so you don't have to think about that.
+//* @cols: How many columns you want
+//* @right: In percent, how much gutter/right margin you want between the columns
+//* @top: Mixed value; How much top margin you want between the columns if they creates a new row.
+//* @last: If you are creating a responsive page, then you have to reset the last values. If this is set to 0, nothing will change.
+//** Example: If you used the a equal-cols function on an element, and you want less columns in lower resolutions. then you set @cols to e.g 2, and @last to the last used column value, that might be 3.
+//*
+//*
+////** _equal-cols-VALUES: Is a private function for the equal-cols to work, you are not supposed to use it. It creates the default values for a column.
+//*
+//*
+////** _equal-cols-RESET: Is a private function for the equal-cols to work, you are not supposed to use it. It's using the @last variable to reset columns used before.
+//*
+//*
+//** _equal-cols-REMOVE-MARGINS: Is a private function for the equal-cols to work, you are not supposed to use it. It deletes the top and bottom margin to not use unnecessary space.
+//*
+//*
+//**************************/
+.equal-cols-full(@cols: 3, @right: 0, @top: 0, @bottom: 0, @remove-margins: true, @last: 0){
+	& when(@last > 0){._equal-cols-reset(@last, @right, @top, 0);} //If @last is greater than 0, reset the column to correct values
+	._equal-cols-values(@cols, @right, @top, @bottom); //Get the default column values
+	& when(@remove-margins = true){._equal-cols-remove-margins(@cols);} //If @remove-margins is true, remove unneccessary space from top and bottom rows.
+}
+
+.equal-cols(@cols: 3, @right: 5%, @top: 20px, @last: 0){
+	& when(@last > 0){._equal-cols-reset(@last, @right, @top, 0);}//If @last is greater than 0, reset the column to correct values
+	._equal-cols-values(@cols, @right, @top, 0);//Get the default column values
+	._equal-cols-remove-margins(@cols);//Remove unneccessary space from top and bottom rows.
+}
+
+._equal-cols-values(@cols, @right, @top, @bottom){
+	float: left;
+	margin-top: @top;
+	margin-bottom: @bottom;
+	margin-right: @right;
+	width: ( 100% - (unit(@right) * (@cols - 1)) ) / @cols;
+	&:nth-child(@{cols}n){margin-right: 0;} //Remove the right-margin on every columns that are at the most right.
+}
+
+._equal-cols-reset(@col, @right, @top, @bottom){
+	&:nth-child(@{col}n){margin-right: unit(@right, '%');} //Set the right margin to the new value
+	&:nth-child(-n + @{col}){margin-top: @top;} //Set the top margin to the new value
+	&:nth-last-child(-n + @{col}){margin-bottom: @bottom;} //Set the margin bottom to the new value
+}
+
+._equal-cols-remove-margins(@col){
+	&:nth-child(-n + @{col}){margin-top: 0;} //Set first row of columns to margin-top: 0;
+	&:nth-last-child(-n + @{col}){margin-bottom: 0;} //Set the last row of columns to margin-bottom: 0;
+}
+
+//**************************
+//****** equal-cols END ********
+//***************************/
+//**************************************************************
+//**************************************************************
+//**************************************************************
+//**************************
+//******** col-split ***********
+//***************************
+//**
+//*** USAGE
+//*
+//* col-split is a function to split a content into columns with various sizes.
+//*
+//*** col-split
+//*@part, how many parts of the total (@cols) it will calculate on.
+//*@right, how much right margin the column will use.
+//*@cols, the total amount of "columns" it wil calculate on.
+//** If @cols is 100, then @part 33 will be a third. If @cols is 10, then @part 3 will be a third. It is a depending variable which @part is relative to.
+//*
+//**
+//**************************/
+
+.col-split(@part: 3, @right: 2, @cols: 12) {
+	width: percentage( (@part / @cols)-(unit(@right) / 100) );
+	margin-right: percentage( (unit(@right) / 100) );
+	float: left;
+
+	&:last-child{
+		width: percentage( (@part / @cols) );
+		margin-right: 0;
+	}
+}
+
+
+.split-1-10{ .col-split(1, 2, 10); }
+.split-2-10{ .col-split(2, 2, 10); }
+.split-3-10{ .col-split(3, 2, 10); }
+.split-4-10{ .col-split(4, 2, 10); }
+.split-5-10{ .col-split(5, 2, 10); }
+.split-6-10{ .col-split(6, 2, 10); }
+.split-7-10{ .col-split(7, 2, 10); }
+.split-8-10{ .col-split(8, 2, 10); }
+.split-9-10{ .col-split(9, 2, 10); }
+
+.split-1-9{ .col-split(1, 2, 9); }
+.split-2-9{ .col-split(2, 2, 9); }
+.split-3-9{ .col-split(3, 2, 9); }
+.split-4-9{ .col-split(4, 2, 9); }
+.split-5-9{ .col-split(5, 2, 9); }
+.split-6-9{ .col-split(6, 2, 9); }
+.split-7-9{ .col-split(7, 2, 9); }
+.split-8-9{ .col-split(8, 2, 9); }
+
+.split-1-8{ .col-split(1, 2, 8); }
+.split-1-2{ .col-split(2, 2, 8); }
+.split-1-3{ .col-split(3, 2, 8); }
+.split-1-4{ .col-split(4, 2, 8); }
+.split-1-5{ .col-split(5, 2, 8); }
+.split-1-6{ .col-split(6, 2, 8); }
+.split-1-7{ .col-split(7, 2, 8); }
+
+.split-1-7{ .col-split(1, 2, 7); }
+.split-2-7{ .col-split(2, 2, 7); }
+.split-3-7{ .col-split(3, 2, 7); }
+.split-4-7{ .col-split(4, 2, 7); }
+.split-5-7{ .col-split(5, 2, 7); }
+.split-6-7{ .col-split(6, 2, 7); }
+
+.split-1-6{ .col-split(1, 2, 6); }
+.split-2-6{ .col-split(2, 2, 6); }
+.split-3-6{ .col-split(3, 2, 6); }
+.split-4-6{ .col-split(4, 2, 6); }
+.split-5-6{ .col-split(5, 2, 6); }
+
+.split-1-5{ .col-split(1, 2, 5); }
+.split-2-5{ .col-split(2, 2, 5); }
+.split-3-5{ .col-split(3, 2, 5); }
+.split-4-5{ .col-split(4, 2, 5); }
+
+.split-1-4{ .col-split(1, 2, 4); }
+.split-2-4{ .col-split(2, 2, 4); }
+.split-3-4{ .col-split(3, 2, 4); }
+
+.split-1-3{ .col-split(1, 2, 3); }
+.split-2-3{ .col-split(2, 2, 3); }
+.split-1-2{ .col-split(1, 2, 2); }
+
+.split-last{margin-right: 0; }
+
+//**************************
+//****** col-split END ******
+//***************************/
+
+
+
+.cf() {
+	*zoom:1;
+	&:before, &:after {content:"";display:table;}
+	&:after {clear:both;}
+}
+
+.inner-content(@max-width: 1024px; @padding-hori: 20px; @padding-vert: 0px;){
+	max-width: @max-width - (@padding-hori * 2);
+	padding: @padding-vert @padding-hori;
+	margin: 0 auto;
+}
+
+.img-auto(@width: 100%, @height: auto){
+	width: @width;
+	height: @height;
+}
+
+.opacity(@percent: 100){
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=@percent)";
+	filter: alpha(opacity=@percent);
+	-moz-opacity: (@percent / 100);
+	-khtml-opacity: (@percent / 100);
+	opacity: (@percent / 100);
+}
+
+.box-sizing(){
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.border-radius(@radius: 4px){
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
+.border-radius-bottom(@radius: 4px){
+	-webkit-border-bottom-right-radius: @radius;
+	-webkit-border-bottom-left-radius: @radius;
+	-moz-border-radius-bottomright: @radius;
+	-moz-border-radius-bottomleft: @radius;
+	border-bottom-right-radius: @radius;
+	border-bottom-left-radius: @radius;
+}
+
+.transition(@type: opacity, @time: 0.2s, @effect: ease-in-out){
+	-webkit-transition: @type @time @effect;
+	-moz-transition: @type @time @effect;
+	transition: @type @time @effect;
+}
+
+.box-shadow(@color: #000000, @attributes: 1px 1px 1px){
+	-webkit-box-shadow: @color @attributes;
+	-moz-box-shadow: @color @attributes;
+	box-shadow: @color @attributes;
+}
+
+.box_shadow_inset(@color: #000000, @attributes: 1px 1px 1px){
+	-webkit-box-shadow: inset @color @attributes;
+	-moz-box-shadow: inset @color @attributes;
+	box-shadow: inset @color @attributes;
+}
+
+.rotate(@deg) {
+	-webkit-transform: rotate(@deg);
+	-moz-transform: rotate(@deg);
+	-o-transform: rotate(@deg);
+	-ms-transform: rotate(@deg);
+	transform: rotate(@deg);
+}
+
+.font-size(@sizeValue) {
+	@remValue: (@sizeValue / 16);
+	@pxValue: @sizeValue;
+	font-size: ~"@{pxValue}px";
+	font-size: ~"@{remValue}rem";
+}
+
+.letter-spacing(@spacing, @fontSize) {
+	@pixelSpacing: (@spacing * @fontSize / 1000);
+	letter-spacing: ~"@{pixelSpacing}px";
+}
